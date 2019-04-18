@@ -148,6 +148,7 @@ STATIC mp_obj_t pyb_main(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_a
 MP_DEFINE_CONST_FUN_OBJ_KW(pyb_main_obj, 1, pyb_main);
 
 #if MICROPY_HW_ENABLE_STORAGE
+#if 0
 static const char fresh_boot_py[] =
 "# boot.py -- run on boot-up\r\n"
 "# can run arbitrary Python, but best to keep it minimal\r\n"
@@ -160,11 +161,13 @@ static const char fresh_boot_py[] =
 "#pyb.usb_mode('VCP+HID') # act as a serial device and a mouse\r\n"
 #endif
 ;
+#endif
 
 static const char fresh_main_py[] =
 "# main.py -- put your code here!\r\n"
 ;
 
+#if 0
 static const char fresh_pybcdc_inf[] =
 #include "genhdr/pybcdc_inf.h"
 ;
@@ -183,6 +186,7 @@ static const char fresh_readme_txt[] =
 "\r\n"
 "Please visit http://micropython.org/help/ for further help.\r\n"
 ;
+#endif
 
 // avoid inlining to avoid stack usage within main()
 MP_NOINLINE STATIC bool init_flash_fs(uint reset_mode) {
@@ -221,6 +225,7 @@ MP_NOINLINE STATIC bool init_flash_fs(uint reset_mode) {
         // TODO check we could write n bytes
         f_close(&fp);
 
+        #if 0
         // create .inf driver file
         f_open(&vfs_fat->fatfs, &fp, "/pybcdc.inf", FA_WRITE | FA_CREATE_ALWAYS);
         f_write(&fp, fresh_pybcdc_inf, sizeof(fresh_pybcdc_inf) - 1 /* don't count null terminator */, &n);
@@ -230,6 +235,7 @@ MP_NOINLINE STATIC bool init_flash_fs(uint reset_mode) {
         f_open(&vfs_fat->fatfs, &fp, "/README.txt", FA_WRITE | FA_CREATE_ALWAYS);
         f_write(&fp, fresh_readme_txt, sizeof(fresh_readme_txt) - 1 /* don't count null terminator */, &n);
         f_close(&fp);
+        #endif
 
         // keep LED on for at least 200ms
         systick_wait_at_least(start_tick, 200);
@@ -258,6 +264,7 @@ MP_NOINLINE STATIC bool init_flash_fs(uint reset_mode) {
     // It is set to the internal flash filesystem by default.
     MP_STATE_PORT(vfs_cur) = vfs;
 
+    #if 0
     // Make sure we have a /flash/boot.py.  Create it if needed.
     FILINFO fno;
     res = f_stat(&vfs_fat->fatfs, "/boot.py", &fno);
@@ -279,6 +286,7 @@ MP_NOINLINE STATIC bool init_flash_fs(uint reset_mode) {
         systick_wait_at_least(start_tick, 200);
         led_state(PYB_LED_GREEN, 0);
     }
+    #endif
 
     return true;
 }
